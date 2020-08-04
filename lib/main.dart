@@ -20,10 +20,11 @@ void main() {
   ));
 }
 
-String _id;
+// String _id;
 int c;
+// ignore: non_constant_identifier_names
 String _Name, _Room, _Dormitory;
-String _data = "";
+// String _data = "";
 
 String a;
 int b;
@@ -40,6 +41,15 @@ class Splash extends StatefulWidget {
 
 class _SplashState extends State<Splash> {
 
+  Future<void> _availableGPS() async {
+    if (!await Nearby().checkLocationPermission()) {
+      Nearby().askLocationPermission();
+    }
+    if (!await Nearby().checkLocationEnabled()) {
+      Nearby().enableLocationServices();
+    }
+  }
+
   bool _first = true;
 
   @override
@@ -52,6 +62,7 @@ class _SplashState extends State<Splash> {
 
   @override
   Widget build(BuildContext context) {
+    _availableGPS();
     return new Scaffold(
       body: new Center(
         // TODO: スプラッシュアニメーション
@@ -95,10 +106,14 @@ class T extends StatefulWidget {
 }
 
 class _T extends State<T> {
+  // ignore: non_constant_identifier_names
   TextEditingController Name =new TextEditingController();
+  // ignore: non_constant_identifier_names
   TextEditingController Dormitory =new TextEditingController();
+  // ignore: non_constant_identifier_names
   TextEditingController Room =new TextEditingController();
 
+  // ignore: missing_return
   Future<List> senddata() async {
     setState(() {
       x = Name.text;
@@ -106,7 +121,7 @@ class _T extends State<T> {
       z = Room.text;
     });
 
-    final response = await http.post("https://test.takedano.com/insertdata.php", body: {
+    await http.post("https://test.takedano.com/insertdata.php", body: {
       "Name": x,
       "Dormitory": y,
       "Room": z,
@@ -379,18 +394,8 @@ class _MyBodyState extends State<Body> {
     });
   }
 
-  Future<void> _availableGPS() async {
-    if (!await Nearby().checkLocationPermission()) {
-      Nearby().askLocationPermission();
-    }
-    if (!await Nearby().checkLocationEnabled()) {
-      Nearby().enableLocationServices();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    _availableGPS();
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
