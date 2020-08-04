@@ -20,11 +20,9 @@ void main() {
   ));
 }
 
-// String _id;
 int c;
 // ignore: non_constant_identifier_names
 String _Name, _Room, _Dormitory;
-// String _data = "";
 
 String a;
 int b;
@@ -41,15 +39,6 @@ class Splash extends StatefulWidget {
 
 class _SplashState extends State<Splash> {
 
-  Future<void> _availableGPS() async {
-    if (!await Nearby().checkLocationPermission()) {
-      Nearby().askLocationPermission();
-    }
-    if (!await Nearby().checkLocationEnabled()) {
-      Nearby().enableLocationServices();
-    }
-  }
-
   bool _first = true;
 
   @override
@@ -62,7 +51,6 @@ class _SplashState extends State<Splash> {
 
   @override
   Widget build(BuildContext context) {
-    _availableGPS();
     return new Scaffold(
       body: new Center(
         // TODO: スプラッシュアニメーション
@@ -394,8 +382,18 @@ class _MyBodyState extends State<Body> {
     });
   }
 
+  Future<void> _availableGPS() async {
+    if (!await Nearby().checkLocationPermission()) {
+      Nearby().askLocationPermission();
+    }
+    if (!await Nearby().checkLocationEnabled()) {
+      Nearby().enableLocationServices();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    _availableGPS();
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
