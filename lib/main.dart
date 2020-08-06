@@ -8,6 +8,7 @@ import 'package:nearby_connections/nearby_connections.dart';
 import 'package:http/http.dart' as http;
 import 'package:rflutter_alert/rflutter_alert.dart';
 
+
 void main() {
   runApp(new MaterialApp(
     title: 'Navigation with Routes',
@@ -92,7 +93,6 @@ class T extends StatefulWidget {
   @override
   _T createState() => _T();
 }
-
 class _T extends State<T> {
   // ignore: non_constant_identifier_names
   TextEditingController Name =new TextEditingController();
@@ -193,7 +193,6 @@ class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
-
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _globalKey = new GlobalKey<ScaffoldState>();
 
@@ -231,33 +230,50 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 
 
+
   final pages = [
-    PageModel.withChild(
-      child: Padding(
-        child: T(),
-        padding: EdgeInsets.only(bottom: 25.0),
-      ),
-      color: const Color(0xFF0097A7),
-      doAnimateChild: true),
+//    PageModel.withChild(
+//      child: Padding(
+//        child: T(),
+//        padding: EdgeInsets.only(bottom: 25.0),
+//      ),
+//      color: const Color(0xFF0097A7),
+//      doAnimateChild: true),
     PageModel(
-        color: const Color(0xFF536DFE),
-        imageAssetPath: 'assets/02.png',
-        title: 'Screen 2',
-        body: 'See the increase in productivity & output',
-        doAnimateImage: true),
-    PageModel(
-        color: const Color(0xFF9B90BC),
-        imageAssetPath: 'assets/03.png',
-        title: 'Screen 3',
-        body: 'Connect with the people from different places',
+        color: const Color(0xFF2e499d),
+        imageAssetPath: 'images/1.png',
+        title: 'Roll call system',
+        body: 'Now, we are starting tutorial and setting!',
         doAnimateImage: true),
     PageModel.withChild(
-        child: Padding(
-          padding: EdgeInsets.only(bottom: 25.0),
-          child: Image.asset('assets/02.png', width: 300.0, height: 300.0),
+        child: new Padding(
+          padding: new EdgeInsets.only(bottom: 25.0),
+          child: T(),
         ),
-        color: const Color(0xFF5886d6),
-        doAnimateChild: false)
+        color: const Color(0xFF2e499d),
+        doAnimateChild: true),
+    PageModel(
+        color: const Color(0xFF2e499d),
+        imageAssetPath: 'images/3.png',
+        title: 'How to use this app?',
+        body: '1. 点呼当番か非点呼者か洗濯 \n'
+              '2. 非点呼者がID送信ボタンを押下\n '
+              '3. 点呼当番が点呼完了ボタンを押下\n ',
+        doAnimateImage: true),
+    PageModel(
+        color: const Color(0xFF2e499d),
+        imageAssetPath: 'images/2.png',
+        title: 'Setting Finish!',
+        body: 'You are finished setting this up\n'
+        'Please enter under button "finish" ',
+        doAnimateImage: true)
+//    PageModel(
+//        child: Padding(
+//          padding: EdgeInsets.only(bottom: 25.0),
+//          child: Image.asset('asset/02.png', width: 300.0, height: 300.0),
+//        ),
+//        color: const Color(0xFF2e499d),
+//        doAnimateChild: false)
   ];
 
 
@@ -328,9 +344,9 @@ class _MyBodyState extends State<Body> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // 以下の「counter」がキー名。見つからなければ０を返す
     setState(() {
-      _Name = prefs.getString('Name') ?? "けや";
-      _Dormitory = prefs.getString('Dormitory') ?? "にま";
-      _Room = prefs.getString('Room') ?? "105";
+      _Name = prefs.getString('Name') ?? "無";
+      _Dormitory = prefs.getString('Dormitory') ?? "無";
+      _Room = prefs.getString('Room') ?? "000";
     });
 
     final getresponse = await http.post("https://test.takedano.com/getdata.php" , body: {
@@ -344,6 +360,8 @@ class _MyBodyState extends State<Body> {
     });
   }
 
+
+
   @override
   void initState() {
     super.initState();
@@ -354,15 +372,19 @@ class _MyBodyState extends State<Body> {
     }else{
       _getPrefItems1();
     }
+//    setState(() {
+//      userName = a;
+//    });
   }
 
   String userName = Random().nextInt(10000).toString();
 //  String userName = a;
-  void _userNameForm(String e) {
-    setState(() {
-      userName = e;
-    });
-  }
+//  String userName = a;
+//  void _userNameForm(String e) {
+//    setState(() {
+//      userName = e;
+//    });
+//  }
 
   List<String> _deviceList = List.filled(20, "");
   int i = 0;
@@ -399,25 +421,25 @@ class _MyBodyState extends State<Body> {
         padding: const EdgeInsets.all(8.0),
         child: ListView(
           children: <Widget>[
-            Text("入力フォーム"),
-            Wrap(
-              children: <Widget>[
-                new TextField(
-                  decoration:
-                  new InputDecoration(labelText: "Enter your userName"),
-                  onChanged: _userNameForm,
-                ),
-              ],
-            ), // 入力フォーム
+//            Text("入力フォーム"),
+//            Wrap(
+//              children: <Widget>[
+//                new TextField(
+//                  decoration:
+//                  new InputDecoration(labelText: "Enter your userName"),
+//                  onChanged: _userNameForm,
+//                ),
+//              ],
+//            ), // 入力フォーム
             Divider(),
-            Text("ユーザー名:" + userName),
+            Text("ユーザー名:" + a),
             Wrap(
               children: <Widget>[
                 RaisedButton(
                   child: Text("デバイス検知を許可"), // 旧 ホスト
                   onPressed: () async {
                     await Nearby().startAdvertising(
-                      userName,
+                      a,
                       strategy,
                       onConnectionResult: (id, status) {},
                       onDisconnected: (id) {},
@@ -430,7 +452,7 @@ class _MyBodyState extends State<Body> {
                   child: Text("デバイスを探す"), // 旧 クライアント
                   onPressed: () async {
                     await Nearby().startDiscovery(
-                      userName,
+                      a,
                       strategy,
                       onEndpointFound: (id, name, serviceId) {
                         _foundDevices(name);
@@ -452,7 +474,6 @@ class _MyBodyState extends State<Body> {
               ],
             ),
             Divider(),
-            Text(a),
             Text("デバイスリスト"),
             Text(_deviceList[0]),
             Text(_deviceList[1]),
