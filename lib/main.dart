@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_overboard/flutter_overboard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math';
@@ -15,8 +16,8 @@ void main() {
     routes: <String, WidgetBuilder>{
       '/': (_) => new Splash(),
       '/tutorial': (_) => new MyHomePage(),
-      '/home': (_) => new MyApp(),
-      '/next': (_) => new Next(),
+      '/home': (_) => new wait(),
+      '/next': (_) => new MyApp(),
     },
   ));
 }
@@ -82,6 +83,97 @@ class _SplashState extends State<Splash> {
     }else{
       Navigator.of(context).pushReplacementNamed("/home");
     }
+  }
+}
+
+
+//-----------
+//スプラッシュ2
+//-----------
+
+
+class wait extends StatefulWidget {
+  @override
+  _waitState createState() => _waitState();
+}
+
+class _waitState extends State<wait> {
+  bool second;
+  String p;
+  _getPrefItems() async {
+    second = true;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // 以下の「counter」がキー名。見つからなければ０を返す
+    setState(() {
+      second = prefs.getBool('second') ?? true;
+    });
+  }
+
+  _getPrefItems1() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // 以下の「counter」がキー名。見つからなければ０を返す
+    setState(() {
+      a = prefs.getString('id') ?? 'IDがありません';
+    });
+  }
+
+  _setPrefItems() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // 以下の「counter」がキー名。
+    await prefs.setBool('second', false);
+    await prefs.setString('id', a);
+  }
+
+
+  Future<void> getdata() async{
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // 以下の「counter」がキー名。見つからなければ０を返す
+    setState(() {
+      _Name = prefs.getString('Name') ?? "無";
+      _Dormitory = prefs.getString('Dormitory') ?? "無";
+      _Room = prefs.getString('Room') ?? "000";
+    });
+
+    final getresponse = await http.post("https://test.takedano.com/getdata.php" , body: {
+      "Name": _Name,
+      "Dormitory": _Dormitory,
+      "Room": _Room,
+    });
+    setState(() {
+      _data1 = json.decode(getresponse.body);
+      a = _data1[0]['id'];
+    });
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    _getPrefItems();
+    if(second){
+      getdata();
+      _setPrefItems();
+    }else{
+      _getPrefItems1();
+    }
+    new Future.delayed(const Duration(seconds: 3))
+        .then((value) => handleTimeout());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      body: new Center(
+        // TODO: スプラッシュアニメーション
+        child: const CircularProgressIndicator(),
+      ),
+    );
+  }
+
+  void handleTimeout() {
+    // ログイン画面へ
+    Navigator.of(context).pushReplacementNamed("/next");
   }
 }
 
@@ -295,6 +387,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
+          backgroundColor: const Color(0xFF2e499d),
           title: const Text('点呼システム(仮称) 機能テスト'),
         ),
         body: Body(),
@@ -312,51 +405,11 @@ class _MyBodyState extends State<Body> {
 
   final Strategy strategy = Strategy.P2P_STAR;
 
-  bool second;
-  String p;
-  _getPrefItems() async {
-    second = true;
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    // 以下の「counter」がキー名。見つからなければ０を返す
-    setState(() {
-      second = prefs.getBool('second') ?? true;
-    });
-  }
-
   _getPrefItems1() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // 以下の「counter」がキー名。見つからなければ０を返す
     setState(() {
-      a = prefs.getString('id') ?? 'IDがありません';
-    });
-  }
-
-  _setPrefItems() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    // 以下の「counter」がキー名。
-    await prefs.setBool('second', false);
-    await prefs.setString('id', a);
-  }
-
-
-  Future<void> getdata() async{
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    // 以下の「counter」がキー名。見つからなければ０を返す
-    setState(() {
-      _Name = prefs.getString('Name') ?? "無";
-      _Dormitory = prefs.getString('Dormitory') ?? "無";
-      _Room = prefs.getString('Room') ?? "000";
-    });
-
-    final getresponse = await http.post("https://test.takedano.com/getdata.php" , body: {
-      "Name": _Name,
-      "Dormitory": _Dormitory,
-      "Room": _Room,
-    });
-    setState(() {
-      _data1 = json.decode(getresponse.body);
-      a = _data1[0]['id'];
+      a = prefs.getString('id') ?? a;
     });
   }
 
@@ -365,13 +418,7 @@ class _MyBodyState extends State<Body> {
   @override
   void initState() {
     super.initState();
-    _getPrefItems();
-    if(second){
-      getdata();
-      _setPrefItems();
-    }else{
-      _getPrefItems1();
-    }
+    _getPrefItems1();
 //    setState(() {
 //      userName = a;
 //    });
@@ -418,7 +465,7 @@ class _MyBodyState extends State<Body> {
     _availableGPS();
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.fromLTRB(8.0,8.0,8.0,0),
         child: ListView(
           children: <Widget>[
 //            Text("入力フォーム"),
@@ -431,45 +478,57 @@ class _MyBodyState extends State<Body> {
 //                ),
 //              ],
 //            ), // 入力フォーム
-            Divider(),
-            Text("ユーザー名:" + a),
-            Wrap(
+//            Divider(),
+            Text('ユーザーID:' + a),
+            Column(
               children: <Widget>[
-                RaisedButton(
-                  child: Text("デバイス検知を許可"), // 旧 ホスト
-                  onPressed: () async {
-                    await Nearby().startAdvertising(
-                      a,
-                      strategy,
-                      onConnectionResult: (id, status) {},
-                      onDisconnected: (id) {},
-                      onConnectionInitiated:
-                          (String endpointId, ConnectionInfo connectionInfo) {},
-                    );
-                  },
+                ConstrainedBox(
+                  constraints: BoxConstraints.expand(height: 40.0 , width: 140.0),
+                  child: RaisedButton(
+                    color: const Color(0xfff3f3f3),
+                    child: Text("デバイス検知を許可"), // 旧 ホスト
+                    onPressed: () async {
+                      await Nearby().startAdvertising(
+                        a,
+                        strategy,
+                        onConnectionResult: (id, status) {},
+                        onDisconnected: (id) {},
+                        onConnectionInitiated:
+                            (String endpointId, ConnectionInfo connectionInfo) {},
+                      );
+                    },
+                  ),
                 ),
-                RaisedButton(
-                  child: Text("デバイスを探す"), // 旧 クライアント
-                  onPressed: () async {
-                    await Nearby().startDiscovery(
-                      a,
-                      strategy,
-                      onEndpointFound: (id, name, serviceId) {
-                        _foundDevices(name);
-                      },
-                      onEndpointLost: (id) {
-                        _lostDevices();
-                      },
-                    );
-                  },
+                ConstrainedBox(
+                  constraints: BoxConstraints.expand(height: 40.0 ,width: 140.0 ),
+                  child: RaisedButton(
+                    color: const Color(0xfff3f3f3),
+                    child: Text("デバイスを探す"), // 旧 クライアント
+                    onPressed: () async {
+                      await Nearby().startDiscovery(
+                        a,
+                        strategy,
+                        onEndpointFound: (id, name, serviceId) {
+                          _foundDevices(name);
+                        },
+                        onEndpointLost: (id) {
+                          _lostDevices();
+                        },
+                      );
+                    },
+                  ),
                 ),
-                RaisedButton(
-                  child: Text("全機能を停止"),
-                  onPressed: () async {
-                    await Nearby().stopAllEndpoints();
-                    _lostDevices();
+                ConstrainedBox(
+                  constraints: BoxConstraints.expand(height: 40.0, width: 140.0),
+                  child: RaisedButton(
+                    color: const Color(0xfff3f3f3),
+                    child: Text("全機能を停止"),
+                    onPressed: () async {
+                      await Nearby().stopAllEndpoints();
+                      _lostDevices();
 //                    _getPrefItems1();
-                  },
+                    },
+                  ),
                 ),
               ],
             ),
