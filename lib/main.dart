@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter_overboard/flutter_overboard.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math';
-import 'package:nearby_connections/nearby_connections.dart';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_overboard/flutter_overboard.dart';
 import 'package:http/http.dart' as http;
+import 'package:nearby_connections/nearby_connections.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 void main() {
@@ -16,7 +16,7 @@ void main() {
     routes: <String, WidgetBuilder>{
       '/': (_) => new Splash(),
       '/tutorial': (_) => new MyHomePage(),
-      '/home': (_) => new wait(),
+      '/home': (_) => new Splash2(),
       '/next': (_) => new MyApp(),
     },
   ));
@@ -55,7 +55,7 @@ class _SplashState extends State<Splash> {
   Widget build(BuildContext context) {
     return new Scaffold(
       body: new Center(
-        // TODO: スプラッシュアニメーション
+        // スプラッシュアニメーション
         child: const CircularProgressIndicator(),
       ),
     );
@@ -92,12 +92,12 @@ class _SplashState extends State<Splash> {
 //-----------
 
 
-class wait extends StatefulWidget {
+class Splash2 extends StatefulWidget {
   @override
-  _waitState createState() => _waitState();
+  _Splash2State createState() => _Splash2State();
 }
 
-class _waitState extends State<wait> {
+class _Splash2State extends State<Splash2> {
   bool second;
   String p;
   _getPrefItems() async {
@@ -165,7 +165,7 @@ class _waitState extends State<wait> {
   Widget build(BuildContext context) {
     return new Scaffold(
       body: new Center(
-        // TODO: スプラッシュアニメーション
+        //スプラッシュアニメーション
         child: const CircularProgressIndicator(),
       ),
     );
