@@ -38,7 +38,7 @@ class _MyBodyState extends State<Body> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // 以下の「counter」がキー名。見つからなければ０を返す
     setState(() {
-      a = prefs.getString('id');
+      a = prefs.getString('id') ?? "0";
     });
   }
 
