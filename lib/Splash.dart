@@ -71,17 +71,17 @@ class Splash2 extends StatefulWidget {
 }
 
 class _Splash2State extends State<Splash2> {
-  Future<bool> _getPrefItems() async {
+  Future<bool> getPrefSecond() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getBool('second') ?? true;
   }
 
-  _getPrefItems1() async {
+  Future<String> getPrefId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('id', "80");
+    return prefs.getString('id') ?? "0";
   }
 
-  _setPrefItems(String id) async {
+  setPrefItems(String id) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('second', false);
     await prefs.setString('id', id);
@@ -108,13 +108,15 @@ class _Splash2State extends State<Splash2> {
   @override
   void initState() {
     super.initState();
-    _getPrefItems().then((second) {
+    getPrefSecond().then((second) {
       if (second) {
         getData().then((id) {
-          _setPrefItems(id);
+          setPrefItems(id);
         });
       } else {
-        _getPrefItems1();
+        getPrefId().then((id){
+          setPrefItems(id);
+        });
       }
     });
     new Future.delayed(const Duration(seconds: 3))
