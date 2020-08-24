@@ -1,4 +1,6 @@
 import 'dart:convert';
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -96,10 +98,10 @@ class _Splash2State extends State<Splash2> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // 以下の「counter」がキー名。
     await prefs.setBool('second', false);
-    await prefs.setString('id', a);
+    await prefs.setString('id', "80");//a);
   }
 
-  Future<void> getdata() async {
+  Future<void> getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // 以下の「counter」がキー名。見つからなければ０を返す
     setState(() {
@@ -108,16 +110,19 @@ class _Splash2State extends State<Splash2> {
       _Room = prefs.getString('Room') ?? "000";
     });
 
-    final getresponse =
+    final getResponse =
         await http.post("https://test.takedano.com/getdata.php", body: {
       "Name": _Name,
       "Dormitory": _Dormitory,
       "Room": _Room,
     });
     setState(() {
-      _data1 = json.decode(getresponse.body);
+      _data1 = json.decode(getResponse.body);
       a = _data1[0]['id'];
     });
+
+    await prefs.setString('id', a);
+    await prefs.setBool('second', false);
   }
 
   @override
@@ -125,7 +130,7 @@ class _Splash2State extends State<Splash2> {
     super.initState();
     _getPrefItems();
     if (second) {
-      getdata();
+      getData();
       _setPrefItems();
     } else {
       _getPrefItems1();
