@@ -64,8 +64,6 @@ class _SplashState extends State<Splash> {
 
 // ignore: non_constant_identifier_names
 String _Name, _Room, _Dormitory;
-var _data1;
-String a;
 
 class Splash2 extends StatefulWidget {
   @override
@@ -73,63 +71,52 @@ class Splash2 extends StatefulWidget {
 }
 
 class _Splash2State extends State<Splash2> {
-  bool second;
-
-  _getPrefItems() async {
-    second = true;
+  Future<bool> _getPrefItems() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    // 以下の「counter」がキー名。見つからなければ０を返す
-    setState(() {
-      second = prefs.getBool('second') ?? true;
-    });
+    return prefs.getBool('second') ?? true;
   }
 
   _getPrefItems1() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    // 以下の「counter」がキー名。見つからなければ０を返す
-    setState(() {
-      a = prefs.getString('id') ?? 'IDがありません';
-    });
+    await prefs.setString('id', "80");
   }
 
-  _setPrefItems() async {
+  _setPrefItems(String id) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    // 以下の「counter」がキー名。
     await prefs.setBool('second', false);
-    await prefs.setString('id', a);
+    await prefs.setString('id', id);
   }
 
-  Future<void> getdata() async {
+  Future<String> getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    // 以下の「counter」がキー名。見つからなければ０を返す
     setState(() {
       _Name = prefs.getString('Name') ?? "無";
       _Dormitory = prefs.getString('Dormitory') ?? "無";
       _Room = prefs.getString('Room') ?? "000";
     });
 
-    final getresponse =
+    final getResponse =
         await http.post("https://test.takedano.com/getdata.php", body: {
       "Name": _Name,
       "Dormitory": _Dormitory,
       "Room": _Room,
     });
-    setState(() {
-      _data1 = json.decode(getresponse.body);
-      a = _data1[0]['id'];
-    });
+
+    return json.decode(getResponse.body)[0]['id'];
   }
 
   @override
   void initState() {
     super.initState();
-    _getPrefItems();
-    if (second) {
-      getdata();
-      _setPrefItems();
-    } else {
-      _getPrefItems1();
-    }
+    _getPrefItems().then((second) {
+      if (second) {
+        getData().then((id) {
+          _setPrefItems(id);
+        });
+      } else {
+        _getPrefItems1();
+      }
+    });
     new Future.delayed(const Duration(seconds: 3))
         .then((value) => handleTimeout());
   }
