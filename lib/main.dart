@@ -12,7 +12,7 @@ void main() {
       '/': (_) => new Splash(),
       '/tutorial': (_) => new MyHomePage(),
       '/home': (_) => new Splash2(),
-      '/which': (_) => new Which(),
+      '/which': (_) => new Splash3(),
       '/next': (_) => new MyApp(),
     },
   ));
