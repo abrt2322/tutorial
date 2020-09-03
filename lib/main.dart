@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tutorial/App.dart';
 import 'package:tutorial/Splash.dart';
+import 'package:tutorial/test.dart';
 import 'package:tutorial/tutorial.dart';
+
 
 void main() {
   runApp(new MaterialApp(
@@ -10,6 +12,7 @@ void main() {
       '/': (_) => new Splash(),
       '/tutorial': (_) => new MyHomePage(),
       '/home': (_) => new Splash2(),
+      '/which': (_) => new Which(),
       '/next': (_) => new MyApp(),
     },
   ));

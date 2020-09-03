@@ -114,7 +114,7 @@ class _Splash2State extends State<Splash2> {
           setPrefItems(id);
         });
       } else {
-        getPrefId().then((id){
+        getPrefId().then((id) {
           setPrefItems(id);
         });
       }
@@ -135,6 +135,6 @@ class _Splash2State extends State<Splash2> {
 
   void handleTimeout() {
     // ログイン画面へ
-    Navigator.of(context).pushReplacementNamed("/next");
+    Navigator.of(context).pushReplacementNamed("/which");
   }
 }
