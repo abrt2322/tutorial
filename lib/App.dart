@@ -14,14 +14,13 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: const Color(0xFF2e499d),
-          title: const Text('点呼システム(仮称) 機能テスト'),
-        ),
-        body: Body(),
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: const Color(0xFF2e499d),
+        title: const Text('点呼係の画面'),
       ),
+      body: Body(),
     );
   }
 }

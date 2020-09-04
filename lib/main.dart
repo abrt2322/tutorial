@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tutorial/App.dart';
 import 'package:tutorial/Splash.dart';
 import 'package:tutorial/test.dart';
+import 'package:tutorial/test2.dart';
 import 'package:tutorial/tutorial.dart';
 
 
@@ -13,6 +14,7 @@ void main() {
       '/tutorial': (_) => new MyHomePage(),
       '/home': (_) => new Splash2(),
       '/which': (_) => new Splash3(),
+      '/others': (_) => new Others(),
       '/next': (_) => new MyApp(),
     },
   ));
