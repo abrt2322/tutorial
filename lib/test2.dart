@@ -53,7 +53,7 @@ class _OthersState extends State<Others> {
     var text = _dateFormat.format(_nowTime);
     return Scaffold(
       appBar: AppBar(
-        title: Text('What do you do?'),
+        title: Text('一般階員の画面'),
         backgroundColor: const Color(0xFF2e499d),
       ),
       body: Container(

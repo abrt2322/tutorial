@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:nearby_connections/nearby_connections.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -45,9 +47,18 @@ class _MyBodyState extends State<Body> {
   void initState() {
     super.initState();
     _getPrefItems1();
+    _initTimer();
 //    setState(() {
 //      userName = a;
 //    });
+  }
+
+  var _nowTime = DateTime.now();
+  final _dateFormat = new DateFormat.Hms();
+
+  void _initTimer() {
+    Timer.periodic(Duration(milliseconds: 33),
+        (Timer timer) => setState(() => _nowTime = DateTime.now()));
   }
 
   String userName = Random().nextInt(10000).toString();
@@ -88,8 +99,10 @@ class _MyBodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
+    var text = _dateFormat.format(_nowTime);
     _availableGPS();
-    return Center(
+    return Container(
+      color: const Color(0xFFbcbcbc),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
         child: ListView(
@@ -105,84 +118,184 @@ class _MyBodyState extends State<Body> {
 //              ],
 //            ), // 入力フォーム
 //            Divider(),
-            Text('ユーザーID:' + a),
-            Column(
-              children: <Widget>[
-                ConstrainedBox(
-                  constraints:
-                      BoxConstraints.expand(height: 40.0, width: 140.0),
-                  child: RaisedButton(
-                    color: const Color(0xfff3f3f3),
-                    child: Text("デバイス検知を許可"), // 旧 ホスト
-                    onPressed: () async {
-                      await Nearby().startAdvertising(
-                        a,
-                        strategy,
-                        onConnectionResult: (id, status) {},
-                        onDisconnected: (id) {},
-                        onConnectionInitiated: (String endpointId,
-                            ConnectionInfo connectionInfo) {},
-                      );
-                    },
-                  ),
+
+            Center(
+              child: Text(
+                '現在時刻：' + text,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0,
+                  color: Colors.black.withOpacity(1.0),
                 ),
-                ConstrainedBox(
-                  constraints:
-                      BoxConstraints.expand(height: 40.0, width: 140.0),
-                  child: RaisedButton(
-                    color: const Color(0xfff3f3f3),
-                    child: Text("デバイスを探す"), // 旧 クライアント
-                    onPressed: () async {
-                      await Nearby().startDiscovery(
-                        a,
-                        strategy,
-                        onEndpointFound: (id, name, serviceId) {
-                          _foundDevices(name);
-                        },
-                        onEndpointLost: (id) {
-                          _lostDevices();
-                        },
-                      );
-                    },
-                  ),
+              ),
+            ),
+            Center(
+              child: Text(
+                'ユーザーID:' + a,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0,
+                  color: Colors.black.withOpacity(1.0),
                 ),
-                ConstrainedBox(
-                  constraints:
-                      BoxConstraints.expand(height: 40.0, width: 140.0),
-                  child: RaisedButton(
-                    color: const Color(0xfff3f3f3),
-                    child: Text("全機能を停止"),
-                    onPressed: () async {
-                      await Nearby().stopAllEndpoints();
-                      _lostDevices();
-//                    _getPrefItems1();
-                    },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: FlatButton(
+                      child: Image.asset(
+                        'images/4.png',
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pushNamed("/next");
+                      },
+                    ),
                   ),
-                ),
-              ],
+                  Expanded(
+                    child: FlatButton(
+                      child: Image.asset(
+                        'images/4.png',
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pushNamed("/next");
+                      },
+                    ),
+                  ),
+//                ConstrainedBox(
+//                  constraints:
+//                      BoxConstraints.expand(height: 40.0, width: 140.0),
+//                  child: RaisedButton(
+//                    color: const Color(0xfff3f3f3),
+//                    child: Text("デバイス検知を許可"), // 旧 ホスト
+//                    onPressed: () async {
+//                      await Nearby().startAdvertising(
+//                        a,
+//                        strategy,
+//                        onConnectionResult: (id, status) {},
+//                        onDisconnected: (id) {},
+//                        onConnectionInitiated: (String endpointId,
+//                            ConnectionInfo connectionInfo) {},
+//                      );
+//                    },
+//                  ),
+//                ),
+//                ConstrainedBox(
+//                  constraints:
+//                      BoxConstraints.expand(height: 40.0, width: 140.0),
+//                  child: RaisedButton(
+//                    color: const Color(0xfff3f3f3),
+//                    child: Text("デバイスを探す"), // 旧 クライアント
+//                    onPressed: () async {
+//                      await Nearby().startDiscovery(
+//                        a,
+//                        strategy,
+//                        onEndpointFound: (id, name, serviceId) {
+//                          _foundDevices(name);
+//                        },
+//                        onEndpointLost: (id) {
+//                          _lostDevices();
+//                        },
+//                      );
+//                    },
+//                  ),
+//                ),
+//                ConstrainedBox(
+//                  constraints:
+//                      BoxConstraints.expand(height: 40.0, width: 140.0),
+//                  child: RaisedButton(
+//                    color: const Color(0xfff3f3f3),
+//                    child: Text("全機能を停止"),
+//                    onPressed: () async {
+//                      await Nearby().stopAllEndpoints();
+//                      _lostDevices();
+////                    _getPrefItems1();
+//                    },
+//                  ),
+//                ),
+                ],
+              ),
             ),
             Divider(),
-            Text("デバイスリスト"),
-            Text(_deviceList[0]),
-            Text(_deviceList[1]),
-            Text(_deviceList[2]),
-            Text(_deviceList[3]),
-            Text(_deviceList[4]),
-            Text(_deviceList[5]),
-            Text(_deviceList[6]),
-            Text(_deviceList[7]),
-            Text(_deviceList[8]),
-            Text(_deviceList[9]),
-            Text(_deviceList[10]),
-            Text(_deviceList[11]),
-            Text(_deviceList[12]),
-            Text(_deviceList[13]),
-            Text(_deviceList[14]),
-            Text(_deviceList[15]),
-            Text(_deviceList[16]),
-            Text(_deviceList[17]),
-            Text(_deviceList[18]),
-            Text(_deviceList[19]),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 5.0),
+              child: Center(
+                child: Text(
+                  "点呼リスト",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15.0,
+                    color: Colors.black.withOpacity(1.0),
+                  ),
+                ),
+              ),
+            ),
+
+            Center(
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              "101 - 武田恋 :",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 15.0,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Image.asset(
+                                'images/8.png',
+                                width: 15.0,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Image.asset(
+                                'images/9.png',
+                                width: 15.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              "101 - 武田恋：",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 15.0,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Image.asset(
+                                'images/8.png',
+                                width: 15.0,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Image.asset(
+                                'images/9.png',
+                                width: 15.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

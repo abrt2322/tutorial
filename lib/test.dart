@@ -43,7 +43,7 @@ class _Splash3State extends State<Splash3> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('一般階員の画面'),
+        title: Text('ホーム画面'),
         backgroundColor: const Color(0xFF2e499d),
       ),
       body: Container(
