@@ -62,6 +62,7 @@ class _MyBodyState extends State<Body> {
   }
 
   String userName = Random().nextInt(10000).toString();
+
 //  String userName = a;
 //  String userName = a;
 //  void _userNameForm(String e) {
@@ -148,7 +149,13 @@ class _MyBodyState extends State<Body> {
                       child: Image.asset(
                         'images/4.png',
                       ),
-                      onPressed: () {
+                      onPressed: () async {
+                        await Nearby().startDiscovery(a, strategy,
+                            onEndpointFound: (id, name, serviceId) {
+                          _foundDevices(name);
+                        }, onEndpointLost: (id) {
+                          _lostDevices();
+                        });
                         Navigator.of(context).pushNamed("/next");
                       },
                     ),
@@ -237,60 +244,35 @@ class _MyBodyState extends State<Body> {
                 children: <Widget>[
                   Row(
                     children: [
-                      Expanded(
-                        child: Row(
-                          children: <Widget>[
-                            Text(
-                              "101 - 武田恋 :",
-                              style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 15.0,
+                      for (int i = 0; i < 20; i++) ...[
+                        Expanded(
+                          child: Row(
+                            children: <Widget>[
+                              Text(
+                                _deviceList[i],
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 15.0,
+                                ),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Image.asset(
-                                'images/8.png',
-                                width: 15.0,
+                              Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Image.asset(
+                                  'images/8.png',
+                                  width: 15.0,
+                                ),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Image.asset(
-                                'images/9.png',
-                                width: 15.0,
+                              Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Image.asset(
+                                  'images/9.png',
+                                  width: 15.0,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                      Expanded(
-                        child: Row(
-                          children: <Widget>[
-                            Text(
-                              "101 - 武田恋：",
-                              style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 15.0,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Image.asset(
-                                'images/8.png',
-                                width: 15.0,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Image.asset(
-                                'images/9.png',
-                                width: 15.0,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      ]
                     ],
                   ),
                 ],

@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:nearby_connections/nearby_connections.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 //
 //class Which extends StatelessWidget {
 //  // This widget is the root of your application.
@@ -24,6 +26,7 @@ class Others extends StatefulWidget {
 }
 
 class _OthersState extends State<Others> {
+  final Strategy strategy = Strategy.P2P_STAR;
   var _nowTime = DateTime.now();
   final _dateFormat = new DateFormat.Hms();
   String a = "";
@@ -105,7 +108,12 @@ class _OthersState extends State<Others> {
                     child: Image.asset(
                       'images/6.png',
                     ),
-                    onPressed: () {
+                    onPressed: () async {
+                      await Nearby().startAdvertising(a, strategy,
+                          onConnectionInitiated: (String endpointId,
+                              ConnectionInfo connectionInfo) {},
+                          onConnectionResult: (id, status) {},
+                          onDisconnected: (id) {});
 //                  changeDiceFace();
                     },
                   ),
