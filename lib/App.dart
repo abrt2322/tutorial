@@ -1,12 +1,17 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:nearby_connections/nearby_connections.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 String a;
+String check;
+// ignore: non_constant_identifier_names
+String _Name, _Dormitory, _Room;
 
 class MyApp extends StatefulWidget {
   @override
@@ -43,14 +48,50 @@ class _MyBodyState extends State<Body> {
     });
   }
 
+  // ignore: non_constant_identifier_names
+  List<MapEntry<String, dynamic>> ViewMembers = [];
+
+  _getMembers() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _Name = prefs.getString('Name') ?? "無";
+      _Dormitory = prefs.getString('Dormitory') ?? "無";
+      _Room = prefs.getString('Room') ?? "000";
+    });
+
+    final getResponse =
+        await http.post("https://test.takedano.com/getMember.php", body: {
+      "Name": _Name,
+      "Dormitory": _Dormitory,
+      "Room": _Room,
+    });
+
+    var jsonData = json.decode(getResponse.body);
+
+    List<MapEntry<String, dynamic>> members = [];
+
+    for (var u in jsonData) {
+      MapEntry<String, dynamic> member;
+      member = MapEntry(u['name'], u['id']);
+      members.add(member);
+    }
+
+    setState(() {
+      ViewMembers = members;
+      if (ViewMembers == null) {
+        check = "ないよ";
+      } else {
+        check = "あるよ";
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     _getPrefItems1();
     _initTimer();
-//    setState(() {
-//      userName = a;
-//    });
+    _getMembers();
   }
 
   var _nowTime = DateTime.now();
@@ -229,53 +270,13 @@ class _MyBodyState extends State<Body> {
               padding: const EdgeInsets.only(bottom: 5.0),
               child: Center(
                 child: Text(
-                  "点呼リスト",
+                  "点呼リスト" + check,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15.0,
                     color: Colors.black.withOpacity(1.0),
                   ),
                 ),
-              ),
-            ),
-
-            Center(
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    children: [
-                      for (int i = 0; i < 20; i++) ...[
-                        Expanded(
-                          child: Row(
-                            children: <Widget>[
-                              Text(
-                                _deviceList[i],
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 15.0,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Image.asset(
-                                  'images/8.png',
-                                  width: 15.0,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Image.asset(
-                                  'images/9.png',
-                                  width: 15.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ]
-                    ],
-                  ),
-                ],
               ),
             ),
           ],
