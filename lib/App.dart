@@ -252,7 +252,7 @@ class _MyBodyState extends State<Body> {
 //                ConstrainedBox(
 //                  constraints:
 //                      BoxConstraints.expand(height: 40.0, width: 140.0),
-//                  child: RaisedButton(
+//                  child: RaisedButton
 //                    color: const Color(0xfff3f3f3),
 //                    child: Text("全機能を停止"),
 //                    onPressed: () async {
@@ -270,7 +270,7 @@ class _MyBodyState extends State<Body> {
               padding: const EdgeInsets.only(bottom: 5.0),
               child: Center(
                 child: Text(
-                  "点呼リスト" + check,
+                  "点呼リスト",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15.0,
